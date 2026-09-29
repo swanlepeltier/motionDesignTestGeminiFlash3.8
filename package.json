@@ -1,0 +1,27 @@
+{
+  "name": "aetheris-motion-engine",
+  "version": "1.0.0",
+  "description": "High-Precision 4D Kinetic Vector & Procedural Motion Design Engine",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python3 -m http.server 3000"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  },
+  "keywords": [
+    "motion-design",
+    "kinetic-typography",
+    "4d-geometry",
+    "tesseract",
+    "web-audio-api",
+    "canvas",
+    "procedural-animation",
+    "bezier-easing"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

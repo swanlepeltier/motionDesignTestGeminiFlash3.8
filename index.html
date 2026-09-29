@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIS // Hyper-Kinematic Motion Design Engine</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./src/css/style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Interactive Canvas -->
+  <div id="canvas-container">
+    <canvas id="motion-canvas"></canvas>
+  </div>
+
+  <!-- Top Director Header -->
+  <header class="top-bar glass-panel">
+    <div class="brand">
+      <div class="brand-icon">
+        <div class="brand-icon-inner"></div>
+      </div>
+      <div class="brand-title">Aetheris</div>
+      <div class="brand-tag">4D MOTION v4.2</div>
+    </div>
+
+    <!-- Scene Navigation -->
+    <nav class="scene-nav">
+      <button class="nav-btn" data-scene="tesseract">
+        <span>01</span> Tesseract
+      </button>
+      <button class="nav-btn" data-scene="gimbal">
+        <span>02</span> Gimbal HUD
+      </button>
+      <button class="nav-btn" data-scene="ribbons">
+        <span>03</span> Ribbons
+      </button>
+      <button class="nav-btn" data-scene="particles">
+        <span>04</span> Singularity
+      </button>
+      <button class="nav-btn active" data-scene="symphony">
+        <span>05</span> Symphony
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Theme Switcher -->
+      <select id="theme-select" title="Color Theme">
+        <option value="cyber_core">Theme: Cyber Core</option>
+        <option value="solaris_gold">Theme: Solar Horology</option>
+        <option value="tokyo_matrix">Theme: Tokyo Matrix</option>
+        <option value="swiss_monochrome">Theme: Swiss Mono</option>
+      </select>
+
+      <!-- Audio Synthesizer Button -->
+      <button id="btn-audio" class="btn-icon" title="Toggle Procedural Audio (M)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+
+      <!-- Snapshot PNG -->
+      <button id="btn-snapshot" class="btn-icon" title="Save 4K Snapshot (S)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+      </button>
+
+      <!-- Record Video Reel -->
+      <button id="btn-record" class="btn-icon" title="Record Motion Reel WebM (R)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+        </svg>
+      </button>
+
+      <!-- Toggle HUD Overlay -->
+      <button id="btn-toggle-hud" class="btn-icon" title="Toggle Overlays (H)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+      </button>
+
+      <!-- Fullscreen -->
+      <button id="btn-fullscreen" class="btn-icon" title="Toggle Fullscreen (F)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Side Dock: Kinematics & Controls -->
+  <aside id="dock-left" class="side-dock dock-left">
+    <!-- Camera & Orbit Controls -->
+    <div class="glass-panel panel-section">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          3D Camera Rig
+        </span>
+      </div>
+
+      <div class="ctrl-row">
+        <span class="ctrl-label">Perspective</span>
+        <select id="cam-preset-select">
+          <option value="iso">Isometric 45°</option>
+          <option value="front">Frontal Blueprint</option>
+          <option value="top">Top Planar</option>
+          <option value="dramatic">Dramatic Low</option>
+          <option value="macro">Macro Zoom</option>
+        </select>
+      </div>
+
+      <div class="ctrl-row">
+        <span class="ctrl-label">Auto-Turntable</span>
+        <input type="checkbox" id="cam-autorotate" checked style="accent-color: var(--theme-accent); cursor: pointer;">
+      </div>
+
+      <div class="ctrl-row" style="margin-top: 6px;">
+        <span class="ctrl-label" style="font-size: 10px; color: var(--theme-muted);">
+          Drag to orbit • Wheel to zoom • Right-drag to pan
+        </span>
+      </div>
+    </div>
+
+    <!-- 4D Geometry & Typo Parameters -->
+    <div class="glass-panel panel-section">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          Geometry & Type
+        </span>
+      </div>
+
+      <div class="ctrl-row">
+        <span class="ctrl-label">Kinetic Title</span>
+      </div>
+      <input type="text" id="typo-input" value="CHRONOS // 4D KINEMATICS" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--theme-border); color: #fff; padding: 6px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px;">
+    </div>
+
+    <!-- Live Telemetry Readouts -->
+    <div class="glass-panel panel-section">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          Live Telemetry
+        </span>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-item">
+          <div class="telemetry-key">FPS Refresh</div>
+          <div id="metric-fps" class="telemetry-value">60 FPS</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-key">Frame Delta</div>
+          <div id="metric-ft" class="telemetry-value">16.6 ms</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-key">4D Coordinates</div>
+          <div id="metric-rot" class="telemetry-value">XW:0.0</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-key">Active Particles</div>
+          <div class="telemetry-value">14,000</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Side Dock: Interactive Bézier Easing Lab -->
+  <aside id="dock-right" class="side-dock dock-right">
+    <div class="glass-panel panel-section">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3v18h18"></path>
+            <path d="M7 17c5-10 10-10 14-14"></path>
+          </svg>
+          Bézier Easing Lab
+        </span>
+      </div>
+
+      <!-- Interactive Easing Canvas -->
+      <canvas id="bezier-canvas" width="260" height="160"></canvas>
+
+      <div class="ctrl-row">
+        <span class="ctrl-label">Preset Curve</span>
+        <select id="bezier-preset-select">
+          <option value="cinematic-swift">Cinematic Swift</option>
+          <option value="cyber-snap">Cyber Snap</option>
+          <option value="elastic-rebound">Elastic Rebound</option>
+          <option value="smooth-sine">Smooth Sine</option>
+          <option value="precision-linear">Linear</option>
+        </select>
+      </div>
+
+      <div class="code-badge">
+        <span id="bezier-css">cubic-bezier(0.16, 1.00, 0.30, 1.00)</span>
+        <button id="btn-copy-css" class="copy-btn">Copy CSS</button>
+      </div>
+    </div>
+
+    <!-- Quick Help / Keybindings -->
+    <div class="glass-panel panel-section">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <line x1="6" y1="8" x2="6" y2="8"></line>
+            <line x1="10" y1="8" x2="10" y2="8"></line>
+            <line x1="14" y1="8" x2="14" y2="8"></line>
+            <line x1="18" y1="8" x2="18" y2="8"></line>
+            <line x1="8" y1="12" x2="8" y2="12"></line>
+            <line x1="12" y1="12" x2="12" y2="12"></line>
+            <line x1="16" y1="12" x2="16" y2="12"></line>
+          </svg>
+          Shortcuts
+        </span>
+      </div>
+
+      <div style="font-family: var(--font-mono); font-size: 10px; color: var(--theme-muted); display: flex; flex-direction: column; gap: 4px;">
+        <div><strong style="color: var(--theme-accent);">[Space]</strong> Play / Pause</div>
+        <div><strong style="color: var(--theme-accent);">[1 - 5]</strong> Jump to Scene 1-5</div>
+        <div><strong style="color: var(--theme-accent);">[M]</strong> Toggle Procedural Sound</div>
+        <div><strong style="color: var(--theme-accent);">[S]</strong> Capture 4K Frame PNG</div>
+        <div><strong style="color: var(--theme-accent);">[R]</strong> Record Motion Reel WebM</div>
+        <div><strong style="color: var(--theme-accent);">[H]</strong> Toggle HUD Overlays</div>
+        <div><strong style="color: var(--theme-accent);">[Click]</strong> Singularity Shockwave</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bottom Timeline Scrubber & Transport -->
+  <footer class="timeline-bar glass-panel">
+    <!-- Play/Pause Controls -->
+    <div class="transport-controls">
+      <button id="btn-play" class="btn-transport play-btn" title="Play/Pause (Space)">
+        <span id="play-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+        </span>
+      </button>
+    </div>
+
+    <!-- Scrubber Bar -->
+    <div class="scrubber-container">
+      <div id="scrubber-track" class="scrubber-track">
+        <div id="scrubber-progress" class="scrubber-progress"></div>
+        <div id="scrubber-thumb" class="scrubber-thumb"></div>
+      </div>
+      <div class="time-readout">
+        <span id="time-current">00:00:00</span>
+        <span>00:12:00 (MASTER LOOP)</span>
+      </div>
+    </div>
+
+    <!-- Speed Pills -->
+    <div class="speed-group">
+      <button class="speed-pill" data-speed="0.25">0.25x</button>
+      <button class="speed-pill" data-speed="0.5">0.5x</button>
+      <button class="speed-pill active" data-speed="1.0">1.0x</button>
+      <button class="speed-pill" data-speed="2.0">2.0x</button>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast-msg" class="toast-msg">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--theme-accent)" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span id="toast-text">SYSTEM READY</span>
+  </div>
+
+  <!-- Entry Script (Native ES Module) -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
