@@ -7,7 +7,7 @@
 
 export class Geometry4D {
   constructor() {
-    this.type = 'tesseract'; // 'tesseract' | 'orthoplex' | 'hyper_torus'
+    this.type = "tesseract"; // 'tesseract' | 'orthoplex' | 'hyper_torus'
     this.size = 180;
     this.distance4D = 2.6;
 
@@ -18,7 +18,7 @@ export class Geometry4D {
       xw: 0,
       yz: 0,
       yw: 0,
-      zw: 0
+      zw: 0,
     };
 
     // Rotation speeds
@@ -28,7 +28,7 @@ export class Geometry4D {
       xw: 0.016, // Rotates 4th dimension
       yz: 0.004,
       yw: 0.012,
-      zw: 0.018
+      zw: 0.018,
     };
 
     this.initGeometries();
@@ -39,10 +39,10 @@ export class Geometry4D {
     this.tesseractVertices = [];
     for (let i = 0; i < 16; i++) {
       this.tesseractVertices.push([
-        (i & 1 ? 1 : -1),
-        (i & 2 ? 1 : -1),
-        (i & 4 ? 1 : -1),
-        (i & 8 ? 1 : -1)
+        i & 1 ? 1 : -1,
+        i & 2 ? 1 : -1,
+        i & 4 ? 1 : -1,
+        i & 8 ? 1 : -1,
       ]);
     }
 
@@ -50,7 +50,7 @@ export class Geometry4D {
     for (let i = 0; i < 16; i++) {
       for (let j = i + 1; j < 16; j++) {
         // Two vertices share an edge if their coordinates differ by exactly 1 bit
-        const diff = (i ^ j);
+        const diff = i ^ j;
         if (diff === 1 || diff === 2 || diff === 4 || diff === 8) {
           this.tesseractEdges.push([i, j]);
         }
@@ -59,14 +59,14 @@ export class Geometry4D {
 
     // 2. 16-Cell / 4D Orthoplex (8 vertices, 24 edges)
     this.orthoplexVertices = [
-      [ 1.6,  0,    0,    0],
-      [-1.6,  0,    0,    0],
-      [ 0,    1.6,  0,    0],
-      [ 0,   -1.6,  0,    0],
-      [ 0,    0,    1.6,  0],
-      [ 0,    0,   -1.6,  0],
-      [ 0,    0,    0,    1.6],
-      [ 0,    0,    0,   -1.6]
+      [1.6, 0, 0, 0],
+      [-1.6, 0, 0, 0],
+      [0, 1.6, 0, 0],
+      [0, -1.6, 0, 0],
+      [0, 0, 1.6, 0],
+      [0, 0, -1.6, 0],
+      [0, 0, 0, 1.6],
+      [0, 0, 0, -1.6],
     ];
     this.orthoplexEdges = [];
     for (let i = 0; i < 8; i++) {
@@ -82,7 +82,8 @@ export class Geometry4D {
     this.torusEdges = [];
     const uSteps = 12;
     const vSteps = 12;
-    const r1 = 1.0, r2 = 1.0;
+    const r1 = 1.0,
+      r2 = 1.0;
 
     for (let u = 0; u < uSteps; u++) {
       const uAngle = (u / uSteps) * Math.PI * 2;
@@ -92,7 +93,7 @@ export class Geometry4D {
           r1 * Math.cos(uAngle),
           r1 * Math.sin(uAngle),
           r2 * Math.cos(vAngle),
-          r2 * Math.sin(vAngle)
+          r2 * Math.sin(vAngle),
         ]);
 
         const curr = u * vSteps + v;
@@ -121,50 +122,62 @@ export class Geometry4D {
 
     // Plane XW
     if (this.rot.xw !== 0) {
-      const cos = Math.cos(this.rot.xw), sin = Math.sin(this.rot.xw);
+      const cos = Math.cos(this.rot.xw),
+        sin = Math.sin(this.rot.xw);
       const x1 = x * cos - w * sin;
       const w1 = x * sin + w * cos;
-      x = x1; w = w1;
+      x = x1;
+      w = w1;
     }
 
     // Plane YW
     if (this.rot.yw !== 0) {
-      const cos = Math.cos(this.rot.yw), sin = Math.sin(this.rot.yw);
+      const cos = Math.cos(this.rot.yw),
+        sin = Math.sin(this.rot.yw);
       const y1 = y * cos - w * sin;
       const w1 = y * sin + w * cos;
-      y = y1; w = w1;
+      y = y1;
+      w = w1;
     }
 
     // Plane ZW
     if (this.rot.zw !== 0) {
-      const cos = Math.cos(this.rot.zw), sin = Math.sin(this.rot.zw);
+      const cos = Math.cos(this.rot.zw),
+        sin = Math.sin(this.rot.zw);
       const z1 = z * cos - w * sin;
       const w1 = z * sin + w * cos;
-      z = z1; w = w1;
+      z = z1;
+      w = w1;
     }
 
     // Plane XY
     if (this.rot.xy !== 0) {
-      const cos = Math.cos(this.rot.xy), sin = Math.sin(this.rot.xy);
+      const cos = Math.cos(this.rot.xy),
+        sin = Math.sin(this.rot.xy);
       const x1 = x * cos - y * sin;
       const y1 = x * sin + y * cos;
-      x = x1; y = y1;
+      x = x1;
+      y = y1;
     }
 
     // Plane XZ
     if (this.rot.xz !== 0) {
-      const cos = Math.cos(this.rot.xz), sin = Math.sin(this.rot.xz);
+      const cos = Math.cos(this.rot.xz),
+        sin = Math.sin(this.rot.xz);
       const x1 = x * cos - z * sin;
       const z1 = x * sin + z * cos;
-      x = x1; z = z1;
+      x = x1;
+      z = z1;
     }
 
     // Plane YZ
     if (this.rot.yz !== 0) {
-      const cos = Math.cos(this.rot.yz), sin = Math.sin(this.rot.yz);
+      const cos = Math.cos(this.rot.yz),
+        sin = Math.sin(this.rot.yz);
       const y1 = y * cos - z * sin;
       const z1 = y * sin + z * cos;
-      y = y1; z = z1;
+      y = y1;
+      z = z1;
     }
 
     return [x, y, z, w];
@@ -175,22 +188,22 @@ export class Geometry4D {
    */
   project4Dto3D(p4) {
     const [x, y, z, w] = p4;
-    const invW = 1.0 / Math.max(0.2, (this.distance4D - w));
+    const invW = 1.0 / Math.max(0.2, this.distance4D - w);
     return {
       x: x * invW * this.size,
       y: y * invW * this.size,
       z: z * invW * this.size,
       w: w,
-      wFactor: invW
+      wFactor: invW,
     };
   }
 
   render(ctx, camera, cx, cy, theme) {
     let rawVertices, edges;
-    if (this.type === 'orthoplex') {
+    if (this.type === "orthoplex") {
       rawVertices = this.orthoplexVertices;
       edges = this.orthoplexEdges;
-    } else if (this.type === 'hyper_torus') {
+    } else if (this.type === "hyper_torus") {
       rawVertices = this.torusVertices;
       edges = this.torusEdges;
     } else {
@@ -212,7 +225,7 @@ export class Geometry4D {
         scale: p2.scale,
         w: p3.w,
         wFactor: p3.wFactor,
-        isVisible: p2.isVisible
+        isVisible: p2.isVisible,
       });
     }
 
@@ -263,7 +276,10 @@ export class Geometry4D {
       if (!node.isVisible) continue;
 
       const normW = (node.w + 1.2) / 2.4;
-      const nodeRadius = Math.max(2.5, Math.min(7.5, (normW * 4.5 + 2) * (node.scale * 1.2)));
+      const nodeRadius = Math.max(
+        2.5,
+        Math.min(7.5, (normW * 4.5 + 2) * (node.scale * 1.2)),
+      );
 
       // Glowing outer ring
       ctx.beginPath();
@@ -274,7 +290,7 @@ export class Geometry4D {
       // Sharp central core
       ctx.beginPath();
       ctx.arc(node.x2, node.y2, nodeRadius, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = "#ffffff";
       ctx.fill();
     }
   }

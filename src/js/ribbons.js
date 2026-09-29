@@ -22,9 +22,9 @@ export class HarmonicRibbons {
 
     // Sparkle satellites traveling along the ribbons
     this.satellites = [
-      { tOffset: 0.1, ribbonIdx: 0, speed: 0.008, color: '#ffffff' },
-      { tOffset: 0.55, ribbonIdx: 1, speed: -0.010, color: '#00f0ff' },
-      { tOffset: 0.82, ribbonIdx: 2, speed: 0.012, color: '#ff00aa' }
+      { tOffset: 0.1, ribbonIdx: 0, speed: 0.008, color: "#ffffff" },
+      { tOffset: 0.55, ribbonIdx: 1, speed: -0.01, color: "#00f0ff" },
+      { tOffset: 0.82, ribbonIdx: 2, speed: 0.012, color: "#ff00aa" },
     ];
   }
 
@@ -56,7 +56,7 @@ export class HarmonicRibbons {
     return {
       x: Math.sin(pX) * this.radiusX,
       y: Math.sin(pY) * this.radiusY,
-      z: Math.cos(pZ) * this.radiusZ
+      z: Math.cos(pZ) * this.radiusZ,
     };
   }
 
@@ -91,10 +91,26 @@ export class HarmonicRibbons {
         const nz = 0;
 
         // Upper and lower edges
-        const u1 = { x: p1.x + nx * ribbonWidth, y: p1.y + ny * ribbonWidth, z: p1.z };
-        const d1 = { x: p1.x - nx * ribbonWidth, y: p1.y - ny * ribbonWidth, z: p1.z };
-        const u2 = { x: p2.x + nx * ribbonWidth, y: p2.y + ny * ribbonWidth, z: p2.z };
-        const d2 = { x: p2.x - nx * ribbonWidth, y: p2.y - ny * ribbonWidth, z: p2.z };
+        const u1 = {
+          x: p1.x + nx * ribbonWidth,
+          y: p1.y + ny * ribbonWidth,
+          z: p1.z,
+        };
+        const d1 = {
+          x: p1.x - nx * ribbonWidth,
+          y: p1.y - ny * ribbonWidth,
+          z: p1.z,
+        };
+        const u2 = {
+          x: p2.x + nx * ribbonWidth,
+          y: p2.y + ny * ribbonWidth,
+          z: p2.z,
+        };
+        const d2 = {
+          x: p2.x - nx * ribbonWidth,
+          y: p2.y - ny * ribbonWidth,
+          z: p2.z,
+        };
 
         // Project all 4 corners
         const pu1 = camera.project(u1.x, u1.y, u1.z, cx, cy);
@@ -102,16 +118,25 @@ export class HarmonicRibbons {
         const pu2 = camera.project(u2.x, u2.y, u2.z, cx, cy);
         const pd2 = camera.project(d2.x, d2.y, d2.z, cx, cy);
 
-        if (!pu1.isVisible || !pd1.isVisible || !pu2.isVisible || !pd2.isVisible) continue;
+        if (
+          !pu1.isVisible ||
+          !pd1.isVisible ||
+          !pu2.isVisible ||
+          !pd2.isVisible
+        )
+          continue;
 
         const avgDepth = (pu1.depth + pd1.depth + pu2.depth + pd2.depth) * 0.25;
         const tVal = i / this.pointsPerRibbon;
 
         segments.push({
-          pu1, pd1, pu2, pd2,
+          pu1,
+          pd1,
+          pu2,
+          pd2,
           avgDepth,
           tVal,
-          ribbonIdx: r
+          ribbonIdx: r,
         });
       }
     }

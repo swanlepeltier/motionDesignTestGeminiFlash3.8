@@ -27,7 +27,10 @@ export class AudioEngine {
 
       // Master output node
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.4, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(
+        this.isMuted ? 0 : 0.4,
+        this.ctx.currentTime,
+      );
 
       // Spectrum Analyser
       this.analyser = this.ctx.createAnalyser();
@@ -40,7 +43,7 @@ export class AudioEngine {
       this.initAmbientDrone();
       this.isEnabled = true;
     } catch (e) {
-      console.warn('Web Audio API not supported or blocked:', e);
+      console.warn("Web Audio API not supported or blocked:", e);
     }
   }
 
@@ -48,7 +51,7 @@ export class AudioEngine {
     this.init();
     if (!this.ctx) return false;
 
-    if (this.ctx.state === 'suspended') {
+    if (this.ctx.state === "suspended") {
       this.ctx.resume();
     }
 
@@ -71,23 +74,23 @@ export class AudioEngine {
     this.droneGain.gain.setValueAtTime(0.08, this.ctx.currentTime);
 
     this.droneFilter = this.ctx.createBiquadFilter();
-    this.droneFilter.type = 'lowpass';
+    this.droneFilter.type = "lowpass";
     this.droneFilter.frequency.setValueAtTime(140, this.ctx.currentTime);
     this.droneFilter.Q.setValueAtTime(3.5, this.ctx.currentTime);
 
     // Fundamental oscillator (55Hz / A1)
     this.droneOsc1 = this.ctx.createOscillator();
-    this.droneOsc1.type = 'sine';
+    this.droneOsc1.type = "sine";
     this.droneOsc1.frequency.setValueAtTime(55, this.ctx.currentTime);
 
     // Harmonic detuned 5th (82.4Hz / E2)
     this.droneOsc2 = this.ctx.createOscillator();
-    this.droneOsc2.type = 'triangle';
+    this.droneOsc2.type = "triangle";
     this.droneOsc2.frequency.setValueAtTime(82.4, this.ctx.currentTime);
 
     // LFO for breathing filter sweep
     const lfo = this.ctx.createOscillator();
-    lfo.type = 'sine';
+    lfo.type = "sine";
     lfo.frequency.setValueAtTime(0.15, this.ctx.currentTime);
 
     const lfoGain = this.ctx.createGain();
@@ -109,7 +112,11 @@ export class AudioEngine {
   updateDroneModulation(intensity = 1.0) {
     if (!this.droneFilter || !this.ctx || this.isMuted) return;
     const baseFreq = 120 + Math.min(intensity, 3.0) * 160;
-    this.droneFilter.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.2);
+    this.droneFilter.frequency.setTargetAtTime(
+      baseFreq,
+      this.ctx.currentTime,
+      0.2,
+    );
   }
 
   /**
@@ -123,11 +130,11 @@ export class AudioEngine {
     const gain = this.ctx.createGain();
     const filter = this.ctx.createBiquadFilter();
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(pitch, t);
     osc.frequency.exponentialRampToValueAtTime(pitch * 0.4, t + 0.025);
 
-    filter.type = 'bandpass';
+    filter.type = "bandpass";
     filter.frequency.setValueAtTime(pitch, t);
     filter.Q.setValueAtTime(4, t);
 
@@ -152,7 +159,7 @@ export class AudioEngine {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sawtooth';
+    osc.type = "sawtooth";
     osc.frequency.setValueAtTime(pitch, t);
     osc.frequency.linearRampToValueAtTime(pitch * 1.3, t + duration * 0.5);
     osc.frequency.linearRampToValueAtTime(pitch * 0.9, t + duration);
@@ -183,10 +190,10 @@ export class AudioEngine {
     const mod = this.ctx.createOscillator();
     const modGain = this.ctx.createGain();
 
-    carrier.type = 'sine';
+    carrier.type = "sine";
     carrier.frequency.setValueAtTime(freq, t);
 
-    mod.type = 'sine';
+    mod.type = "sine";
     mod.frequency.setValueAtTime(freq * 2.5, t);
     modGain.gain.setValueAtTime(freq * 0.8, t);
     modGain.gain.exponentialRampToValueAtTime(1, t + duration * 0.5);
@@ -216,12 +223,12 @@ export class AudioEngine {
     const filter = this.ctx.createBiquadFilter();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sawtooth';
+    osc.type = "sawtooth";
     osc.frequency.setValueAtTime(90, t);
     osc.frequency.exponentialRampToValueAtTime(800, t + duration * 0.4);
     osc.frequency.exponentialRampToValueAtTime(140, t + duration);
 
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(200, t);
     filter.frequency.exponentialRampToValueAtTime(3200, t + duration * 0.4);
     filter.frequency.exponentialRampToValueAtTime(250, t + duration);
@@ -249,7 +256,7 @@ export class AudioEngine {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(freq * 2.2, t);
     osc.frequency.exponentialRampToValueAtTime(freq * 0.6, t + duration);
 
@@ -271,7 +278,7 @@ export class AudioEngine {
       return {
         frequency: this.fftData.fill(0),
         waveform: this.waveData.fill(128),
-        energy: 0
+        energy: 0,
       };
     }
     this.analyser.getByteFrequencyData(this.fftData);
@@ -286,7 +293,7 @@ export class AudioEngine {
     return {
       frequency: this.fftData,
       waveform: this.waveData,
-      energy
+      energy,
     };
   }
 }

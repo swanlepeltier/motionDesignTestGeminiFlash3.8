@@ -13,7 +13,15 @@ export class ParticleSystem {
     this.lifespans = new Float32Array(count);
     this.colors = new Float32Array(count);
 
-    this.shockwave = { active: false, x: 0, y: 0, z: 0, radius: 0, maxRadius: 380, speed: 18 };
+    this.shockwave = {
+      active: false,
+      x: 0,
+      y: 0,
+      z: 0,
+      radius: 0,
+      maxRadius: 380,
+      speed: 18,
+    };
     this.gravityStrength = 0.85;
     this.curlScale = 0.0035;
     this.time = 0;
@@ -29,7 +37,9 @@ export class ParticleSystem {
 
   resetParticle(i, initial = false) {
     const idx = i * 3;
-    const radius = initial ? (40 + Math.random() * 320) : (240 + Math.random() * 120);
+    const radius = initial
+      ? 40 + Math.random() * 320
+      : 240 + Math.random() * 120;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
 
@@ -152,7 +162,7 @@ export class ParticleSystem {
 
   render(ctx, camera, cx, cy, theme) {
     ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = "lighter";
 
     const pArray = [];
     const step = 1; // Render all particles
@@ -177,14 +187,17 @@ export class ParticleSystem {
         depth: p2.depth,
         scale: p2.scale,
         speed,
-        colorSeed: this.colors[i]
+        colorSeed: this.colors[i],
       });
     }
 
     // Render particles
     for (let i = 0; i < pArray.length; i++) {
       const p = pArray[i];
-      const pSize = Math.max(0.8, Math.min(3.2, (1.2 + p.speed * 0.4) * p.scale));
+      const pSize = Math.max(
+        0.8,
+        Math.min(3.2, (1.2 + p.speed * 0.4) * p.scale),
+      );
       const color = theme.getParticleColor(p.speed, p.colorSeed);
 
       ctx.fillStyle = color;
@@ -193,12 +206,19 @@ export class ParticleSystem {
 
     // Render shockwave ripple ring in 3D
     if (this.shockwave.active) {
-      const s2 = camera.project(this.shockwave.x, this.shockwave.y, this.shockwave.z, cx, cy);
+      const s2 = camera.project(
+        this.shockwave.x,
+        this.shockwave.y,
+        this.shockwave.z,
+        cx,
+        cy,
+      );
       if (s2.isVisible) {
         const ringR = this.shockwave.radius * s2.scale;
         ctx.beginPath();
         ctx.arc(s2.x, s2.y, ringR, 0, Math.PI * 2);
-        const shockAlpha = (1.0 - this.shockwave.radius / this.shockwave.maxRadius) * 0.7;
+        const shockAlpha =
+          (1.0 - this.shockwave.radius / this.shockwave.maxRadius) * 0.7;
         ctx.strokeStyle = `rgba(0, 240, 255, ${shockAlpha})`;
         ctx.lineWidth = 2.5;
         ctx.stroke();

@@ -33,13 +33,13 @@ export class Camera3D {
   }
 
   initEvents() {
-    this.canvas.addEventListener('mousedown', (e) => {
+    this.canvas.addEventListener("mousedown", (e) => {
       this.isDragging = true;
       this.isPanning = e.button === 2 || e.shiftKey;
       this.lastMouse = { x: e.clientX, y: e.clientY };
     });
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       if (!this.isDragging) return;
       const dx = e.clientX - this.lastMouse.x;
       const dy = e.clientY - this.lastMouse.y;
@@ -51,84 +51,108 @@ export class Camera3D {
         this.panTarget.y += dy * panSpeed;
       } else {
         this.targetTheta += dx * 0.008;
-        this.targetPhi = Math.max(0.1, Math.min(Math.PI - 0.1, this.targetPhi - dy * 0.008));
+        this.targetPhi = Math.max(
+          0.1,
+          Math.min(Math.PI - 0.1, this.targetPhi - dy * 0.008),
+        );
       }
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener("mouseup", () => {
       this.isDragging = false;
       this.isPanning = false;
     });
 
-    this.canvas.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY > 0 ? 1.1 : 0.9;
-      this.targetRadius = Math.max(200, Math.min(2200, this.targetRadius * zoomFactor));
-    }, { passive: false });
+    this.canvas.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault();
+        const zoomFactor = e.deltaY > 0 ? 1.1 : 0.9;
+        this.targetRadius = Math.max(
+          200,
+          Math.min(2200, this.targetRadius * zoomFactor),
+        );
+      },
+      { passive: false },
+    );
 
     // Touch support
     let touchStartDist = 0;
-    this.canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        this.isDragging = true;
-        this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      } else if (e.touches.length === 2) {
-        touchStartDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-      }
-    }, { passive: true });
+    this.canvas.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length === 1) {
+          this.isDragging = true;
+          this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.touches.length === 2) {
+          touchStartDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY,
+          );
+        }
+      },
+      { passive: true },
+    );
 
-    this.canvas.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && this.isDragging) {
-        const dx = e.touches[0].clientX - this.lastMouse.x;
-        const dy = e.touches[0].clientY - this.lastMouse.y;
-        this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        this.targetTheta += dx * 0.008;
-        this.targetPhi = Math.max(0.1, Math.min(Math.PI - 0.1, this.targetPhi - dy * 0.008));
-      } else if (e.touches.length === 2) {
-        const currentDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        const diff = touchStartDist - currentDist;
-        this.targetRadius = Math.max(200, Math.min(2200, this.targetRadius + diff * 1.5));
-        touchStartDist = currentDist;
-      }
-    }, { passive: true });
+    this.canvas.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e.touches.length === 1 && this.isDragging) {
+          const dx = e.touches[0].clientX - this.lastMouse.x;
+          const dy = e.touches[0].clientY - this.lastMouse.y;
+          this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          this.targetTheta += dx * 0.008;
+          this.targetPhi = Math.max(
+            0.1,
+            Math.min(Math.PI - 0.1, this.targetPhi - dy * 0.008),
+          );
+        } else if (e.touches.length === 2) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY,
+          );
+          const diff = touchStartDist - currentDist;
+          this.targetRadius = Math.max(
+            200,
+            Math.min(2200, this.targetRadius + diff * 1.5),
+          );
+          touchStartDist = currentDist;
+        }
+      },
+      { passive: true },
+    );
 
-    this.canvas.addEventListener('touchend', () => {
+    this.canvas.addEventListener("touchend", () => {
       this.isDragging = false;
     });
 
     // Disable context menu on canvas for right-click pan
-    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
   setViewPreset(preset) {
     switch (preset) {
-      case 'iso':
+      case "iso":
         this.targetTheta = Math.PI * 0.25;
         this.targetPhi = Math.PI * 0.35;
         this.targetRadius = 650;
         break;
-      case 'front':
+      case "front":
         this.targetTheta = 0;
         this.targetPhi = Math.PI * 0.5;
         this.targetRadius = 600;
         break;
-      case 'top':
+      case "top":
         this.targetTheta = 0;
         this.targetPhi = 0.12;
         this.targetRadius = 700;
         break;
-      case 'dramatic':
+      case "dramatic":
         this.targetTheta = Math.PI * 0.65;
         this.targetPhi = Math.PI * 0.72;
         this.targetRadius = 480;
         break;
-      case 'macro':
+      case "macro":
         this.targetTheta = Math.PI * 0.15;
         this.targetPhi = Math.PI * 0.45;
         this.targetRadius = 320;
@@ -198,7 +222,7 @@ export class Camera3D {
       y: screenY,
       depth,
       scale,
-      isVisible: true
+      isVisible: true,
     };
   }
 }

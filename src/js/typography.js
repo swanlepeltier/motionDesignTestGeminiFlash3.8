@@ -6,13 +6,13 @@
 
 export class KineticTypography {
   constructor() {
-    this.text = 'CHRONOS // 4D KINEMATICS';
+    this.text = "CHRONOS // 4D KINEMATICS";
     this.phrases = [
-      'CHRONOS // 4D KINEMATICS',
-      'QUANTUM MANIFOLD // ACT-01',
-      'SYNTHETIC CHOREOGRAPHY',
-      'NEURAL MOTION VECTOR',
-      'BEYOND THREE DIMENSIONS'
+      "CHRONOS // 4D KINEMATICS",
+      "QUANTUM MANIFOLD // ACT-01",
+      "SYNTHETIC CHOREOGRAPHY",
+      "NEURAL MOTION VECTOR",
+      "BEYOND THREE DIMENSIONS",
     ];
     this.phraseIndex = 0;
     this.time = 0;
@@ -43,7 +43,7 @@ export class KineticTypography {
         offsetY: 0,
         rotateX: 0,
         opacity: 1,
-        glitchOffset: 0
+        glitchOffset: 0,
       });
     }
   }
@@ -98,8 +98,8 @@ export class KineticTypography {
     // Font styling
     const fontSize = Math.max(16, Math.min(32, window.innerWidth * 0.024));
     ctx.font = `800 ${fontSize}px "Space Grotesk", "Inter", -apple-system, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     // Letter spacing expansion with sine breathing
     const spacing = fontSize * 0.72 + Math.sin(this.time * 1.2) * 3.5;
@@ -125,11 +125,11 @@ export class KineticTypography {
       // Chromatic Aberration Split when glitching
       if (this.glitchActive && state.glitchOffset !== 0) {
         // Red channel offset
-        ctx.fillStyle = 'rgba(255, 0, 80, 0.8)';
+        ctx.fillStyle = "rgba(255, 0, 80, 0.8)";
         ctx.fillText(state.char, -3, 0);
 
         // Cyan channel offset
-        ctx.fillStyle = 'rgba(0, 240, 255, 0.8)';
+        ctx.fillStyle = "rgba(0, 240, 255, 0.8)";
         ctx.fillText(state.char, 3, 0);
       }
 
@@ -141,7 +141,7 @@ export class KineticTypography {
       if (fontSize >= 18 && i % 4 === 0) {
         ctx.font = '8px "JetBrains Mono", monospace';
         ctx.fillStyle = theme.accent;
-        ctx.fillText(`[${i < 9 ? '0' + (i + 1) : i + 1}]`, 0, -fontSize * 0.75);
+        ctx.fillText(`[${i < 9 ? "0" + (i + 1) : i + 1}]`, 0, -fontSize * 0.75);
         ctx.font = `800 ${fontSize}px "Space Grotesk", sans-serif`;
       }
 
@@ -185,10 +185,18 @@ export class KineticTypography {
     // Top subtle status label
     ctx.fillStyle = theme.accent;
     ctx.font = '9px "JetBrains Mono", monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('SYS.TYPO // KINETIC MATRIX V4.2', cx - halfW + 14, cy - halfH - 6);
+    ctx.textAlign = "left";
+    ctx.fillText(
+      "SYS.TYPO // KINETIC MATRIX V4.2",
+      cx - halfW + 14,
+      cy - halfH - 6,
+    );
 
-    ctx.textAlign = 'right';
-    ctx.fillText(`FPS SYNC: 120HZ // PHASE: ${(this.time % 10).toFixed(2)}s`, cx + halfW - 14, cy - halfH - 6);
+    ctx.textAlign = "right";
+    ctx.fillText(
+      `FPS SYNC: 120HZ // PHASE: ${(this.time % 10).toFixed(2)}s`,
+      cx + halfW - 14,
+      cy - halfH - 6,
+    );
   }
 }

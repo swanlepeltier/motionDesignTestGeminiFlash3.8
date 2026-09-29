@@ -26,7 +26,9 @@ export class BezierEasing {
   }
 
   calcBezierSlope(t, a1, a2) {
-    return 3 * (1 - 3 * a2 + 3 * a1) * t * t + 2 * (3 * a2 - 6 * a1) * t + 3 * a1;
+    return (
+      3 * (1 - 3 * a2 + 3 * a1) * t * t + 2 * (3 * a2 - 6 * a1) * t + 3 * a1
+    );
   }
 
   /**
@@ -48,7 +50,8 @@ export class BezierEasing {
 
     // Binary search fallback if Newton-Raphson diverges
     if (t < 0 || t > 1) {
-      let t0 = 0, t1 = 1;
+      let t0 = 0,
+        t1 = 1;
       t = x;
       while (t0 < t1) {
         const currentX = this.calcBezier(t, this.x1, this.x2);
@@ -70,7 +73,7 @@ export class BezierEasing {
 export class BezierEditor {
   constructor(canvasElement, onChange = null) {
     this.canvas = canvasElement;
-    this.ctx = canvasElement.getContext('2d');
+    this.ctx = canvasElement.getContext("2d");
     this.onChange = onChange;
 
     this.solver = new BezierEasing(0.16, 1.0, 0.3, 1.0);
@@ -81,11 +84,11 @@ export class BezierEditor {
     this.previewProgress = 0;
 
     this.presets = {
-      'cyber-snap': [0.05, 0.95, 0.15, 1.0],
-      'cinematic-swift': [0.16, 1.0, 0.3, 1.0],
-      'elastic-rebound': [0.68, -0.4, 0.265, 1.4],
-      'smooth-sine': [0.45, 0.05, 0.55, 0.95],
-      'precision-linear': [0.0, 0.0, 1.0, 1.0]
+      "cyber-snap": [0.05, 0.95, 0.15, 1.0],
+      "cinematic-swift": [0.16, 1.0, 0.3, 1.0],
+      "elastic-rebound": [0.68, -0.4, 0.265, 1.4],
+      "smooth-sine": [0.45, 0.05, 0.55, 0.95],
+      "precision-linear": [0.0, 0.0, 1.0, 1.0],
     };
 
     this.initEvents();
@@ -98,7 +101,7 @@ export class BezierEditor {
       const scaleY = this.canvas.height / rect.height;
       return {
         x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY
+        y: (e.clientY - rect.top) * scaleY,
       };
     };
 
@@ -107,7 +110,7 @@ export class BezierEditor {
       const graphH = this.canvas.height - this.padding * 2;
       return {
         x: Math.max(0, Math.min(1, (pos.x - this.padding) / graphW)),
-        y: 1 - (pos.y - this.padding) / graphH
+        y: 1 - (pos.y - this.padding) / graphH,
       };
     };
 
@@ -116,7 +119,7 @@ export class BezierEditor {
       const graphH = this.canvas.height - this.padding * 2;
       return {
         x: this.padding + norm.x * graphW,
-        y: this.padding + (1 - norm.y) * graphH
+        y: this.padding + (1 - norm.y) * graphH,
       };
     };
 
@@ -131,12 +134,12 @@ export class BezierEditor {
       const d1 = Math.hypot(pos.x - p1Canvas.x, pos.y - p1Canvas.y);
       const d2 = Math.hypot(pos.x - p2Canvas.x, pos.y - p2Canvas.y);
 
-      if (d1 < radius) return 'p1';
-      if (d2 < radius) return 'p2';
+      if (d1 < radius) return "p1";
+      if (d2 < radius) return "p2";
       return null;
     };
 
-    this.canvas.addEventListener('mousedown', (e) => {
+    this.canvas.addEventListener("mousedown", (e) => {
       const pos = getPos(e);
       const hit = hitTest(pos);
       if (hit) {
@@ -145,12 +148,12 @@ export class BezierEditor {
       }
     });
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener("mousemove", (e) => {
       if (!this.isDragging || !this.activePoint) return;
       const pos = getPos(e);
       const norm = toNorm(pos);
 
-      if (this.activePoint === 'p1') {
+      if (this.activePoint === "p1") {
         this.solver.setPoints(norm.x, norm.y, this.solver.x2, this.solver.y2);
       } else {
         this.solver.setPoints(this.solver.x1, this.solver.y1, norm.x, norm.y);
@@ -160,32 +163,36 @@ export class BezierEditor {
       this.draw();
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener("mouseup", () => {
       this.isDragging = false;
       this.activePoint = null;
     });
 
     // Touch events
-    this.canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        const pos = getPos(touch);
-        const hit = hitTest(pos);
-        if (hit) {
-          this.activePoint = hit;
-          this.isDragging = true;
-          e.preventDefault();
+    this.canvas.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          const pos = getPos(touch);
+          const hit = hitTest(pos);
+          if (hit) {
+            this.activePoint = hit;
+            this.isDragging = true;
+            e.preventDefault();
+          }
         }
-      }
-    }, { passive: false });
+      },
+      { passive: false },
+    );
 
-    window.addEventListener('touchmove', (e) => {
+    window.addEventListener("touchmove", (e) => {
       if (!this.isDragging || !this.activePoint) return;
       const touch = e.touches[0];
       const pos = getPos(touch);
       const norm = toNorm(pos);
 
-      if (this.activePoint === 'p1') {
+      if (this.activePoint === "p1") {
         this.solver.setPoints(norm.x, norm.y, this.solver.x2, this.solver.y2);
       } else {
         this.solver.setPoints(this.solver.x1, this.solver.y1, norm.x, norm.y);
@@ -195,7 +202,7 @@ export class BezierEditor {
       this.draw();
     });
 
-    window.addEventListener('touchend', () => {
+    window.addEventListener("touchend", () => {
       this.isDragging = false;
       this.activePoint = null;
     });
@@ -225,11 +232,11 @@ export class BezierEditor {
     ctx.clearRect(0, 0, w, h);
 
     // Dark sleek background
-    ctx.fillStyle = 'rgba(10, 14, 23, 0.85)';
+    ctx.fillStyle = "rgba(10, 14, 23, 0.85)";
     ctx.fillRect(0, 0, w, h);
 
     // Subtle Grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
@@ -250,7 +257,7 @@ export class BezierEditor {
     }
 
     // Diagonal reference line (Linear 1:1)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(padding, h - padding);
@@ -259,7 +266,7 @@ export class BezierEditor {
     ctx.setLineDash([]);
 
     // Unit Box Borders
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+    ctx.strokeStyle = "rgba(0, 240, 255, 0.3)";
     ctx.lineWidth = 1.5;
     ctx.strokeRect(padding, padding, graphW, graphH);
 
@@ -271,14 +278,14 @@ export class BezierEditor {
     // Handle Lines
     ctx.lineWidth = 1.5;
     // P0 -> P1 handle
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
+    ctx.strokeStyle = "rgba(0, 240, 255, 0.6)";
     ctx.beginPath();
     ctx.moveTo(p0.x, p0.y);
     ctx.lineTo(p1.x, p1.y);
     ctx.stroke();
 
     // P3 -> P2 handle
-    ctx.strokeStyle = 'rgba(255, 0, 128, 0.6)';
+    ctx.strokeStyle = "rgba(255, 0, 128, 0.6)";
     ctx.beginPath();
     ctx.moveTo(p3.x, p3.y);
     ctx.lineTo(p2.x, p2.y);
@@ -296,29 +303,29 @@ export class BezierEditor {
       ctx.lineTo(c.x, c.y);
     }
 
-    ctx.strokeStyle = '#00f0ff';
+    ctx.strokeStyle = "#00f0ff";
     ctx.lineWidth = 3;
-    ctx.shadowColor = 'rgba(0, 240, 255, 0.7)';
+    ctx.shadowColor = "rgba(0, 240, 255, 0.7)";
     ctx.shadowBlur = 8;
     ctx.stroke();
     ctx.shadowBlur = 0;
 
     // Draggable Handle Handles
     // P1 Handle (Cyan)
-    ctx.fillStyle = '#00f0ff';
+    ctx.fillStyle = "#00f0ff";
     ctx.beginPath();
     ctx.arc(p1.x, p1.y, 6.5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 2;
     ctx.stroke();
 
     // P2 Handle (Magenta)
-    ctx.fillStyle = '#ff0080';
+    ctx.fillStyle = "#ff0080";
     ctx.beginPath();
     ctx.arc(p2.x, p2.y, 6.5, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -326,8 +333,8 @@ export class BezierEditor {
     const easedY = this.solver.solve(this.previewProgress);
     const bead = this.toCanvas({ x: this.previewProgress, y: easedY });
 
-    ctx.fillStyle = '#ffe600';
-    ctx.shadowColor = '#ffe600';
+    ctx.fillStyle = "#ffe600";
+    ctx.shadowColor = "#ffe600";
     ctx.shadowBlur = 10;
     ctx.beginPath();
     ctx.arc(bead.x, bead.y, 5, 0, Math.PI * 2);
@@ -335,9 +342,17 @@ export class BezierEditor {
     ctx.shadowBlur = 0;
 
     // Labels
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.font = '10px monospace';
-    ctx.fillText(`P1: (${this.solver.x1.toFixed(2)}, ${this.solver.y1.toFixed(2)})`, padding, h - 8);
-    ctx.fillText(`P2: (${this.solver.x2.toFixed(2)}, ${this.solver.y2.toFixed(2)})`, w - padding - 85, h - 8);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.font = "10px monospace";
+    ctx.fillText(
+      `P1: (${this.solver.x1.toFixed(2)}, ${this.solver.y1.toFixed(2)})`,
+      padding,
+      h - 8,
+    );
+    ctx.fillText(
+      `P2: (${this.solver.x2.toFixed(2)}, ${this.solver.y2.toFixed(2)})`,
+      w - padding - 85,
+      h - 8,
+    );
   }
 }

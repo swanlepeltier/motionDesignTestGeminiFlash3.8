@@ -18,7 +18,7 @@ export class TelemetryHUD {
     this.radarBlips = [
       { r: 0.35, angle: 1.2, alpha: 0.8 },
       { r: 0.62, angle: 2.8, alpha: 0.6 },
-      { r: 0.85, angle: 4.5, alpha: 0.9 }
+      { r: 0.85, angle: 4.5, alpha: 0.9 },
     ];
   }
 
@@ -35,7 +35,8 @@ export class TelemetryHUD {
 
     // Aperture dilation breathing
     const audioBoost = audioTelemetry ? audioTelemetry.energy * 0.4 : 0;
-    this.apertureOpen += (this.targetAperture + audioBoost - this.apertureOpen) * 0.1;
+    this.apertureOpen +=
+      (this.targetAperture + audioBoost - this.apertureOpen) * 0.1;
 
     // Spring damping crosshair
     this.crosshair.x += (this.crosshair.targetX - this.crosshair.x) * 0.15;
@@ -59,7 +60,7 @@ export class TelemetryHUD {
     this.renderAudioSpectrumRing(ctx, radius * 0.62, theme, audioTelemetry);
 
     // 4. Mechanical Iris Aperture (Radius ~ 180)
-    this.renderMechanicalIris(ctx, radius * 0.50, theme);
+    this.renderMechanicalIris(ctx, radius * 0.5, theme);
 
     // 5. Radar Sweep Line & Blips
     this.renderRadarSweep(ctx, radius * 0.92, accent);
@@ -96,7 +97,7 @@ export class TelemetryHUD {
       const isMajor = deg % 30 === 0;
       const isCard = deg % 90 === 0;
 
-      const len = isCard ? 16 : (isMajor ? 10 : 5);
+      const len = isCard ? 16 : isMajor ? 10 : 5;
       const innerR = r - len;
 
       const cos = Math.cos(angle);
@@ -105,8 +106,8 @@ export class TelemetryHUD {
       ctx.beginPath();
       ctx.moveTo(cos * r, sin * r);
       ctx.lineTo(cos * innerR, sin * innerR);
-      ctx.strokeStyle = isCard ? '#ffffff' : (isMajor ? accent : secondary);
-      ctx.lineWidth = isCard ? 2 : (isMajor ? 1.5 : 1);
+      ctx.strokeStyle = isCard ? "#ffffff" : isMajor ? accent : secondary;
+      ctx.lineWidth = isCard ? 2 : isMajor ? 1.5 : 1;
       ctx.stroke();
 
       // Degree labels at 30 degree intervals
@@ -116,8 +117,8 @@ export class TelemetryHUD {
         ctx.rotate(angle + Math.PI / 2);
         ctx.fillStyle = secondary;
         ctx.font = '9px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText(`${deg}°`, 0, 0);
         ctx.restore();
       }
@@ -150,7 +151,10 @@ export class TelemetryHUD {
         const sin = Math.sin(subAngle);
         ctx.beginPath();
         ctx.moveTo(cos * r, sin * r);
-        ctx.lineTo(cos * (r + (j % 5 === 0 ? 8 : 4)), sin * (r + (j % 5 === 0 ? 8 : 4)));
+        ctx.lineTo(
+          cos * (r + (j % 5 === 0 ? 8 : 4)),
+          sin * (r + (j % 5 === 0 ? 8 : 4)),
+        );
         ctx.strokeStyle = secondary;
         ctx.lineWidth = 1;
         ctx.stroke();
@@ -166,7 +170,7 @@ export class TelemetryHUD {
       ctx.beginPath();
       ctx.moveTo(cos * (r - 12), sin * (r - 12));
       ctx.lineTo(cos * (r - 4), sin * (r - 4));
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }
@@ -234,7 +238,7 @@ export class TelemetryHUD {
       // Mechanical pivot rivet
       ctx.beginPath();
       ctx.arc(outerR * 0.92, 0, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = "#ffffff";
       ctx.fill();
 
       ctx.restore();
@@ -256,9 +260,9 @@ export class TelemetryHUD {
 
     // Glowing sector gradient
     const grad = ctx.createRadialGradient(0, 0, 10, 0, 0, r);
-    grad.addColorStop(0, 'transparent');
-    grad.addColorStop(0.8, 'rgba(0, 240, 255, 0.02)');
-    grad.addColorStop(1, 'rgba(0, 240, 255, 0.15)');
+    grad.addColorStop(0, "transparent");
+    grad.addColorStop(0.8, "rgba(0, 240, 255, 0.02)");
+    grad.addColorStop(1, "rgba(0, 240, 255, 0.15)");
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -317,19 +321,27 @@ export class TelemetryHUD {
     const b = 6;
     // Top-left
     ctx.beginPath();
-    ctx.moveTo(-size, -size + b); ctx.lineTo(-size, -size); ctx.lineTo(-size + b, -size);
+    ctx.moveTo(-size, -size + b);
+    ctx.lineTo(-size, -size);
+    ctx.lineTo(-size + b, -size);
     // Top-right
-    ctx.moveTo(size - b, -size); ctx.lineTo(size, -size); ctx.lineTo(size, -size + b);
+    ctx.moveTo(size - b, -size);
+    ctx.lineTo(size, -size);
+    ctx.lineTo(size, -size + b);
     // Bottom-left
-    ctx.moveTo(-size, size - b); ctx.lineTo(-size, size); ctx.lineTo(-size + b, size);
+    ctx.moveTo(-size, size - b);
+    ctx.lineTo(-size, size);
+    ctx.lineTo(-size + b, size);
     // Bottom-right
-    ctx.moveTo(size - b, size); ctx.lineTo(size, size); ctx.lineTo(size, size - b);
+    ctx.moveTo(size - b, size);
+    ctx.lineTo(size, size);
+    ctx.lineTo(size, size - b);
     ctx.stroke();
 
     // Central crosshair dot
     ctx.beginPath();
     ctx.arc(0, 0, 2, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = "#ffffff";
     ctx.fill();
 
     // Offset coordinates
